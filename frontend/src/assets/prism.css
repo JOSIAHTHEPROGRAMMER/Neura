@@ -1,0 +1,334 @@
+/*
+  prism.css — A polished PrismJS stylesheet for GPT-style code rendering.
+  - Supports light & dark themes (auto via prefers-color-scheme; manual via [data-theme="dark"]).
+  - Great defaults for code blocks, inline code, line numbers, diff highlight, match-braces, toolbar, copy button.
+  - Customizable via CSS variables.
+*/
+
+/* ===============================
+   1) THEME VARIABLES
+   =============================== */
+:root {
+  /* Base */
+  --prism-font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --prism-font-size: 0.95rem;
+  --prism-line-height: 1.6;
+  --prism-radius: 14px;
+
+  /* Light palette */
+  --prism-bg: #fbfbfe;            /* editor background */
+  --prism-bg-alt: #f0f2f8;        /* gutters/line numbers */
+  --prism-text: #1f2937;          /* default fg */
+  --prism-muted: #6b7280;         /* comments */
+  --prism-selection: #c7d2fe;     /* selection */
+  --prism-border: #e5e7eb;        /* borders */
+  --prism-shadow: 0 10px 30px rgba(2, 6, 23, 0.08);
+
+  /* Tokens (light) */
+  --tok-comment: #6b7280;
+  --tok-punctuation: #4b5563;
+  --tok-operator: #2563eb;
+  --tok-keyword: #7c3aed;         /* purple */
+  --tok-boolean: #0ea5e9;         /* sky */
+  --tok-number: #1d4ed8;          /* blue */
+  --tok-string: #047857;          /* emerald */
+  --tok-char: #16a34a;            /* green */
+  --tok-variable: #b45309;        /* amber-700 */
+  --tok-constant: #ea580c;        /* orange-600 */
+  --tok-builtin: #0d9488;         /* teal */
+  --tok-function: #9333ea;        /* violet */
+  --tok-class: #0f766e;           /* teal-700 */
+  --tok-interface: #1f2937;       /* gray-800 */
+  --tok-tag: #dc2626;             /* red */
+  --tok-attr-name: #b91c1c;       /* dark red */
+  --tok-attr-value: #065f46;      /* emerald-900 */
+  --tok-regex: #065f46;           /* emerald-900 */
+  --tok-important: #be185d;       /* rose */
+  --tok-deleted-bg: #fee2e2;
+  --tok-inserted-bg: #dcfce7;
+}
+
+/* Dark theme overrides */
+[data-theme="dark"] :root {
+  --prism-bg: #0b1020;          /* deep navy */
+  --prism-bg-alt: #0f172a;      /* slate-900 */
+  --prism-text: #e5e7eb;        /* gray-200 */
+  --prism-muted: #94a3b8;       /* slate-400 */
+  --prism-selection: #2b3a67;
+  --prism-border: #172554;      /* indigo-950 */
+  --prism-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+
+  --tok-comment: #94a3b8;       /* softer comments */
+  --tok-punctuation: #cbd5e1;
+  --tok-operator: #60a5fa;
+  --tok-keyword: #c084fc;       /* lilac */
+  --tok-boolean: #38bdf8;
+  --tok-number: #93c5fd;
+  --tok-string: #86efac;
+  --tok-char: #4ade80;
+  --tok-variable: #fbbf24;
+  --tok-constant: #fb923c;
+  --tok-builtin: #5eead4;
+  --tok-function: #a78bfa;
+  --tok-class: #22d3ee;
+  --tok-interface: #e5e7eb;
+  --tok-tag: #f87171;
+  --tok-attr-name: #fca5a5;
+  --tok-attr-value: #86efac;
+  --tok-regex: #86efac;
+  --tok-important: #fb7185;
+  --tok-deleted-bg: #3b0d0d;
+  --tok-inserted-bg: #082b12;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --prism-bg: #0b1020;          /* deep navy */
+    --prism-bg-alt: #0f172a;      /* slate-900 */
+    --prism-text: #e5e7eb;        /* gray-200 */
+    --prism-muted: #94a3b8;       /* slate-400 */
+    --prism-selection: #2b3a67;
+    --prism-border: #172554;      /* indigo-950 */
+    --prism-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+
+    --tok-comment: #94a3b8;       /* softer comments */
+    --tok-punctuation: #cbd5e1;
+    --tok-operator: #60a5fa;
+    --tok-keyword: #c084fc;       /* lilac */
+    --tok-boolean: #38bdf8;
+    --tok-number: #93c5fd;
+    --tok-string: #86efac;
+    --tok-char: #4ade80;
+    --tok-variable: #fbbf24;
+    --tok-constant: #fb923c;
+    --tok-builtin: #5eead4;
+    --tok-function: #a78bfa;
+    --tok-class: #22d3ee;
+    --tok-interface: #e5e7eb;
+    --tok-tag: #f87171;
+    --tok-attr-name: #fca5a5;
+    --tok-attr-value: #86efac;
+    --tok-regex: #86efac;
+    --tok-important: #fb7185;
+    --tok-deleted-bg: #3b0d0d;
+    --tok-inserted-bg: #082b12;
+  }
+}
+
+/* ===============================
+   2) BASE ELEMENTS
+   =============================== */
+code[class*="language-"],
+pre[class*="language-"] {
+  color: var(--prism-text);
+  background: none;
+  font-family: var(--prism-font-family);
+  font-size: var(--prism-font-size);
+  text-shadow: none;
+  direction: ltr;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  line-height: var(--prism-line-height);
+  -moz-tab-size: 2;
+  -o-tab-size: 2;
+  tab-size: 2;
+  hyphens: none;
+}
+
+/* Code block container */
+pre[class*="language-"] {
+  padding: 1.1rem 1.2rem;
+  margin: 1rem 0;
+  overflow: auto;
+  background: var(--prism-bg);
+  border: 1px solid var(--prism-border);
+  border-radius: var(--prism-radius);
+  box-shadow: var(--prism-shadow);
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.45rem;
+  background: var(--prism-bg-alt);
+  border: 1px solid var(--prism-border);
+  white-space: normal;
+}
+
+/* Selection */
+pre[class*="language-"] ::selection,
+pre[class*="language-"]::selection,
+code[class*="language-"]::selection {
+  background: var(--prism-selection);
+}
+
+/* Wrap helper: add class 'wrap' to <pre> to enable word-wrapping */
+pre.wrap { white-space: pre-wrap; word-break: break-word; overflow-wrap: anywhere; }
+
+/* Subtle scrollbars (WebKit) */
+pre[class*="language-"]::-webkit-scrollbar { height: 12px; width: 12px; }
+pre[class*="language-"]::-webkit-scrollbar-thumb { background: var(--prism-border); border-radius: 999px; }
+pre[class*="language-"]::-webkit-scrollbar-track { background: transparent; }
+
+/* ===============================
+   3) TOKENS
+   =============================== */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata { color: var(--tok-comment); font-style: italic; }
+
+.token.punctuation { color: var(--tok-punctuation); }
+.token.operator { color: var(--tok-operator); }
+
+.token.keyword { color: var(--tok-keyword); font-weight: 600; }
+.token.boolean { color: var(--tok-boolean); }
+.token.number { color: var(--tok-number); }
+.token.string { color: var(--tok-string); }
+.token.char { color: var(--tok-char); }
+.token.symbol,
+.token.constant { color: var(--tok-constant); }
+.token.builtin { color: var(--tok-builtin); }
+.token.function { color: var(--tok-function); }
+.token.class-name { color: var(--tok-class); font-weight: 600; }
+.token.interface { color: var(--tok-interface); font-weight: 600; }
+.token.tag { color: var(--tok-tag); }
+.token.attr-name { color: var(--tok-attr-name); }
+.token.attr-value { color: var(--tok-attr-value); }
+.token.regex { color: var(--tok-regex); }
+
+.token.important,
+.token.bold { color: var(--tok-important); font-weight: 700; }
+.token.italic { font-style: italic; }
+.token.entity { cursor: help; }
+
+/* Diff highlight plugin */
+.token.inserted { background: var(--tok-inserted-bg); color: inherit; display: inline-block; width: 100%; }
+.token.deleted { background: var(--tok-deleted-bg); color: inherit; display: inline-block; width: 100%; }
+
+/* Markdown fenced code language label (via data-language) */
+pre[data-language]::before {
+  content: attr(data-language);
+  position: absolute;
+  top: 0.4rem;
+  right: 0.6rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--prism-muted);
+}
+
+/* ===============================
+   4) LINE NUMBERS (plugin)
+   =============================== */
+pre.line-numbers { position: relative; padding-left: 3.4rem; counter-reset: linenumber; }
+pre.line-numbers > code { position: relative; }
+
+.line-numbers .line-numbers-rows {
+  position: absolute;
+  pointer-events: none;
+  top: 0; left: 0;
+  width: 2.8rem;
+  border-right: 1px solid var(--prism-border);
+  background: var(--prism-bg-alt);
+  user-select: none;
+}
+
+.line-numbers-rows > span { display: block; counter-increment: linenumber; }
+.line-numbers-rows > span::before {
+  content: counter(linenumber);
+  display: block;
+  text-align: right;
+  padding: 0 0.6rem;
+  color: var(--prism-muted);
+}
+
+/* ===============================
+   5) MATCH-BRACES (plugin)
+   =============================== */
+.token.punctuation.brace-hover,
+.token.punctuation.brace-selected {
+  outline: 1px dashed var(--tok-operator);
+  outline-offset: 2px;
+}
+
+/* ===============================
+   6) TOOLBAR (plugin) + copy button
+   =============================== */
+.prism-toolbar { position: absolute; top: 8px; right: 8px; display: flex; gap: 6px; }
+.prism-toolbar button,
+.prism-toolbar span {
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  padding: 6px 8px;
+  border-radius: 10px;
+  background: var(--prism-bg-alt);
+  border: 1px solid var(--prism-border);
+  color: var(--prism-text);
+  cursor: pointer;
+  transition: transform .12s ease, background-color .12s ease, border-color .12s ease;
+}
+.prism-toolbar button:hover { transform: translateY(-1px); }
+.prism-toolbar button:active { transform: translateY(1px); }
+
+/* Ensure pre is positioned for toolbar and language badge */
+pre[class*="language-"] { position: relative; }
+
+/* ===============================
+   7) COMMAND-LINE (plugin)
+   =============================== */
+.command-line-prompt { border-right: 1px solid var(--prism-border); margin-right: 1rem; padding-right: 1rem; }
+.command-line-prompt > span:before { color: var(--prism-muted); }
+.command-line-prompt > span[data-user]::before { content: attr(data-user) "@" attr(data-host) " $"; }
+.command-line-prompt > span[data-prompt]::before { content: attr(data-prompt); }
+.command-line-prompt > span:not([data-user]):not([data-prompt])::before { content: "$"; }
+
+/* ===============================
+   8) INLINE DIFF BADGES (optional utility)
+   =============================== */
+pre .diff-marker { position: sticky; left: 0; display: inline-block; width: 1.2rem; margin-left: -1.2rem; color: var(--prism-muted); }
+
+/* ===============================
+   9) FOCUS & ACCESSIBILITY
+   =============================== */
+pre:focus-within { box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25), var(--prism-shadow); outline: none; }
+
+/* ===============================
+   10) PRINT
+   =============================== */
+@media print {
+  pre[class*="language-"] { box-shadow: none; border-color: #c7c7c7; }
+  .prism-toolbar { display: none !important; }
+}
+
+/* ===============================
+   11) OPTIONAL UTILITIES FOR GPT-LIKE UX
+   =============================== */
+/* Soft container around code blocks like chat bubbles */
+.chat-code-bubble {
+  padding: 0.5rem;
+  background: transparent;
+}
+.chat-code-bubble > pre[class*="language-"] {
+  margin: 0.25rem 0;
+}
+
+/* Badge for file names above code blocks */
+.code-filename {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--prism-muted);
+  background: var(--prism-bg-alt);
+  border: 1px solid var(--prism-border);
+  border-bottom: 0;
+  padding: 0.35rem 0.6rem;
+  border-top-left-radius: var(--prism-radius);
+  border-top-right-radius: var(--prism-radius);
+}
+.code-filename + pre[class*="language-"] {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
