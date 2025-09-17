@@ -1,4 +1,8 @@
+import imagekit from "../configs/imagekit.js"
 import { Chat } from "../models/Chat.js"
+import axios from  'axios'
+import { User } from "../models/User.js"
+import openai from "../configs/openai.js"
 
 // User Text query to ai
 export const sendChatMessage = async (req, res) => {
@@ -78,27 +82,40 @@ export const imageGenerator = async (req, res) => {
         chat.messages.push({
             role: "user", content: prompt,
             timestamp: Date.now(),
-            isImage: true
+            isImage: false
         })
 
+        const encodedPrompt = encodeURIComponent(prompt)
 
 
 
-        const { choices } = await openai.chat.completions.create({
-            model: "gemini-2.0-flash",
-            messages: [
-                {
-                    role: "user",
-                    content: prompt,
-                },
-            ],
-        });
 
 
+//construct imagekit url
+        const imageUrl = `${process.env.IMAGEKIT_URL_ENDPOINT}/ik-genimg-prompt-${encodedPrompt}/neura/${Date.now()}.png?tr=w-800,h-800`;
+
+
+//generate ai image using imagekit
+      const aiImage =  await axios.get(imageUrl, {responseType: "arraybuffer"} )
+
+
+
+      const base64Image = `data:image/pnng;base64,${Buffer.from(aiImage.data,"binary").toString('base64')}`
+
+
+       
+      const uploadRes = await imagekit.upload({
+        file: base64Image,
+        filename: `${Date.now()}.png`,
+        folder: "neura"
+      })
 
         const reply = {
-            ...choices[0].message, timestamp: Date.now(),
-            isImage: false
+            role: `assistant`, 
+            content: uploadRes.url,
+            timestamp: Date.now(),
+            isImage: true,
+            isPublished
         }     
         
         
