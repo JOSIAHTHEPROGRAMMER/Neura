@@ -106,7 +106,7 @@ export const imageGenerator = async (req, res) => {
        
       const uploadRes = await imagekit.upload({
         file: base64Image,
-        filename: `${Date.now()}.png`,
+        fileName: `${Date.now()}.png`,
         folder: "neura"
       })
 
