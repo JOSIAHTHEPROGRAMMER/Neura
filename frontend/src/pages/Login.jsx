@@ -55,6 +55,7 @@ const handleSubmit = async (e) => {
     } else {
         setErrors(newErrors);
     }
+    setLoading(true)
 };
 
 
