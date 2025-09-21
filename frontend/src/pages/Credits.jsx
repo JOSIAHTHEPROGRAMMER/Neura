@@ -1,15 +1,49 @@
 import React, { useEffect, useState } from "react";
 import Loading from "./Loading";
 import { dummyPlans } from "../assets/dummyData";
+import { useAppContext } from "../context/AppContext";
+import toast from "react-hot-toast";
 
 const Credits = () => {
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { axios, token } = useAppContext();
 
   const fetchPlans = async () => {
-    setPlans(dummyPlans);
+    try {
+      const { data } = await axios.get("/api/credit/plan", {
+        headers: { Authorization: token },
+      });
+      if (data.success) {
+        setPlans(data.plans);
+      } else {
+        toast.error(data.message || 'Failed to fetch payment plans');
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
     setLoading(false);
   };
+
+
+  const purchasePlan = async (planId) => {
+     try {
+        const { data } = await axios.post("/api/credit/purchase", {planId},
+          {headers: { Authorization: token }} 
+         )
+
+      if (data.success) {
+        window.location.href = data.url
+        toast.success("purchases")
+      } else {
+        toast.error(data.message);
+      }
+
+     } catch (error) {
+             toast.error(error.message);
+
+     }
+  }
 
   useEffect(() => {
     fetchPlans();
@@ -36,11 +70,13 @@ const Credits = () => {
             <h3 className="text-xl font-semibold mb-2 text-center">
               {plan.name}
             </h3>
-            <p className={`text-sm dark:text-purple-400 mb-4 ${
-        plan.popular
-          ? "text-gray-400"
-          : "text-gray-300 "
-      }`}>{plan.description}</p>
+            <p
+              className={`text-sm dark:text-purple-400 mb-4 ${
+                plan.popular ? "text-gray-400" : "text-gray-300 "
+              }`}
+            >
+              {plan.description}
+            </p>
             <p className="text-2xl font-bold mb-4">
               ${plan.price}/mo - {plan.credits} credits
             </p>
@@ -52,7 +88,7 @@ const Credits = () => {
                 </li>
               ))}
             </ul>
-            <button
+            <button onClick={()=> toast.promise(purchasePlan(plan.id),{loading:'Processing payment...'})}
               className="mt-auto w-full bg-[#5445c5] 
              hover:bg-[#8024dd]  text-amber-50 
              font-semibold py-2.5 cursor-pointer px-4 rounded-lg shadow-sm transition-all"

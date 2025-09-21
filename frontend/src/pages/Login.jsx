@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import Loading from './Loading';
+import { useAppContext } from '../context/AppContext';
+import toast from 'react-hot-toast';
 
 const Login = () => { 
     const [state, setState] = useState("login");
     const [loading, setLoading] = useState(false);
+    const {axios, setToken} = useAppContext()
     
     const [formData, setFormData] = useState({
         name: "",
@@ -27,18 +30,33 @@ const Login = () => {
         }
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        const newErrors = validateForm();
-        
-        if (Object.keys(newErrors).length === 0) {
-            // Handle form submission
-            console.log('Form submitted:', formData);
-           
-        } else {
-            setErrors(newErrors);
+const handleSubmit = async (e) => {
+    e.preventDefault();
+    const url = state === "login" ? '/api/user/login' : '/api/user/register';
+    const newErrors = validateForm();
+
+    if (Object.keys(newErrors).length === 0) {
+        try {
+            const { data } = await axios.post(url, {
+                name: formData.name,
+                email: formData.email,
+                password: formData.password,
+            });
+
+            if (data.success) {
+                setToken(data.token);
+                localStorage.setItem('token', data.token);
+            } else {
+                toast.error(data.message);
+            }
+        } catch (error) {
+            toast.error(error.response?.data?.message || error.message);
         }
-    };
+    } else {
+        setErrors(newErrors);
+    }
+};
+
 
     const validateForm = () => {
         const newErrors = {};

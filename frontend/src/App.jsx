@@ -9,19 +9,22 @@ import './assets/prism.css'
 import Loading from "./pages/Loading";
 import Login from "./pages/Login";
 import { useAppContext } from "./context/AppContext";
+import {Toaster} from 'react-hot-toast'
+
+
 const App = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const {pathname } = useLocation()
 
-  const {user} = useAppContext()
+  const {user , loadingUser} = useAppContext()
 
 
-  if(pathname === '/loading') return <Loading/>
+  if(pathname === '/loading' || loadingUser) return <Loading/>
 
   return (
     <>
       {/* Open Sidebar Arrow (outside) */}
-
+    <Toaster/>
       {user ? ( <div
         className={`
           absolute top-3 left-3 md:hidden z-20

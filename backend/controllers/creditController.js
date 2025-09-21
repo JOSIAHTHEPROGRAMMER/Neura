@@ -66,7 +66,7 @@ export const purchasePlan = async (req, res) => {
   try {
     const { planId } = req.body
     const userId = req.user._id
-    const plan = plans.find(plan => plan._id == planId)
+    const plan = plans.find(plan => plan.id == planId)
 
     if (!plan) {
       return res.json({ success: false, message: "Invalid plan" })
@@ -74,9 +74,9 @@ export const purchasePlan = async (req, res) => {
 
     const transaction = await Transaction.create({
       userId: userId,
-      planId: plan._id,
+      planId: plan.id,
       amount: plan.price,
-      credit: plan.credits,
+      credits: plan.credits,
       isPaid: false
     })
 

@@ -1,16 +1,32 @@
 import React, { useEffect, useState } from 'react'
-import { dummyImages } from '../assets/dummyData'
 import Loading from "./Loading";
 import { FocusCards } from '../components/ui/focus-cards';
+import { useAppContext } from '../context/AppContext';
+import toast from 'react-hot-toast';
 
 const Community = () => {
   const [images, setImages] = useState([])
   const [loading, setLoading] = useState(true)
+  const {axios} = useAppContext()
 
-  const fetchImages = async () => {
-    setImages(dummyImages)
-    setLoading(false)
+ const fetchImages = async () => {
+  try {
+    const { data } = await axios.get('/api/user/published')
+    if (data.success) {
+      const cardsWithId = data.images.map(card => ({
+        ...card,
+        _id: crypto.randomUUID() 
+      }));
+      setImages(cardsWithId);
+    } else {
+      toast.error(data.message)
+    }
+  } catch (error) {
+    toast.error(error.message)
   }
+  setLoading(false)
+}
+
 
   useEffect(() => {
     fetchImages()  

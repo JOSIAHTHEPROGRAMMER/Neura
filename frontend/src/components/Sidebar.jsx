@@ -4,16 +4,52 @@ import { FaArrowLeft, FaMoon, FaPlus, FaSearch, FaSun } from "react-icons/fa";
 import {
   RiDeleteBin6Line,
   RiGalleryFill,
-  RiLogoutBoxFill,
   RiVipDiamondFill,
+  RiLogoutBoxLine
 } from "react-icons/ri";
 import moment from "moment";
 import { assets } from "../assets/dummyData";
+import toast from "react-hot-toast";
 
 const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
-  const { chats, setSelectedChat, theme, setTheme, user, navigate } =
+  const { chats, setSelectedChat, theme, setTheme, user, navigate, createNewChat, axios, setChats, fetchUserChats, setToken, token } =
     useAppContext();
   const [search, setSearch] = useState("");
+
+  const logout = () => {
+    localStorage.removeItem('token')
+    setToken(null)
+    toast.success('you Logged out!')
+  }
+
+
+const deleteChat = async (e, chatId) => {
+  try {
+    e.stopPropagation();
+
+    const confirmed = window.confirm('Are you sure you want to delete this chat?');
+    if (!confirmed) return;
+
+    const { data } = await axios.post(
+      '/api/chat/delete',
+      { chatId },
+      { headers: { Authorization: token } }  
+    );
+
+    if (data.success) {
+
+      setChats(prev => prev.filter(chat => chat._id !== chatId));
+
+
+      await fetchUserChats();
+
+      toast.success(data.message);
+    }
+  } catch (error) {
+    toast.error(error.response?.data?.message || error.message); 
+  }
+};
+
 
   return (
     <div
@@ -38,7 +74,7 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
       <p className="text-xs opacity-70">Your friendly AI assistant</p>
 
       {/* New Chat Button */}
-      <button className="flex justify-center items-center gap-2 w-full py-2 mt-10 text-white bg-gradient-to-r from-[#382a9e] to-[#6825ac] text-sm rounded-md cursor-pointer hover:scale-105 transition-transform">
+      <button onClick={createNewChat} className="flex justify-center items-center gap-2 w-full py-2 mt-10 text-white bg-gradient-to-r from-[#382a9e] to-[#6825ac] text-sm rounded-md cursor-pointer hover:scale-105 transition-transform">
         <FaPlus />
         New Chat
       </button>
@@ -91,7 +127,7 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
                 </p>
               </div>
 
-              <RiDeleteBin6Line className="hidden group-hover:block cursor-pointer " />
+              <RiDeleteBin6Line onClick={e=>toast.promise(deleteChat(e, chat._id), {loading: 'deleting...'})} className="hidden group-hover:block cursor-pointer " />
             </div>
           ))}
       </div>
@@ -150,15 +186,15 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
       <div className="flex items-center gap-2 p-3 mt-4 border border-gray-400 dark:border-white/15 rounded-md cursor-pointer hover:scale-105 transition-transform">
         <img
           src={assets.pfp}
-          className="w-7 h-7 rounded-full invert dark:invert-0"
+          className="w-7 h-7 rounded-full border not-dark:border-b-gray-500"
         />
-        <div className="flex flex-col text-sm">
+        <div className="flex justify-between flex-row text-sm w-full ">
           <p className="flex text-sm dark:text-primary truncate">
             {user ? user.name : "Login / SignUp"}
           </p>
 
           {user && (
-            <RiLogoutBoxFill className="hidden invert dark:invert-0 group-hover:block" />
+            <RiLogoutBoxLine onClick={logout} className="cursor-pointer not-dark:text-black  hover:text-primary text-xl" />
           )}
         </div>
       </div>
