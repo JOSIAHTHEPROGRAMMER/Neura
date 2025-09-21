@@ -4,7 +4,7 @@ import { User } from "../models/User.js";
 
 export const stripeWebhooks = async (req, res) => {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
-    const sg = req.headers["stripe-signature"]
+    const sign = req.headers["stripe-signature"]
 
 
     let event;
@@ -20,7 +20,7 @@ export const stripeWebhooks = async (req, res) => {
         switch (event.type) {
             case "payment_intent.succeeded": {
                 const paymentIntent = event.data.object;
-                const sessionList = stripe.checkout.sessions.list(
+                const sessionList = await stripe.checkout.sessions.list(
                     {
                         payment_intent: paymentIntent.id,
                     }
