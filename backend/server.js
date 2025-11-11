@@ -1,12 +1,12 @@
 import express from 'express'
 import 'dotenv/config'
 import cors from 'cors'
-import connectDB from '../configs/mongodb.js'
-import userRouter from '../routes/userRoutes.js'
-import chatRouter from '../routes/chatRoutes.js'
-import messageRouter from '../routes/messageRoutes.js'
-import creditRouter from '../routes/creditRoutes.js'
-import { stripeWebhooks } from '../controllers/webhooks.js'
+import connectDB from './configs/mongodb.js'
+import userRouter from './routes/userRoutes.js'
+import chatRouter from './routes/chatRoutes.js'
+import messageRouter from './routes/messageRoutes.js'
+import creditRouter from './routes/creditRoutes.js'
+import { stripeWebhooks } from './controllers/webhooks.js'
 
 const app = express()
 
