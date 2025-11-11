@@ -31,4 +31,6 @@ app.use('/api/chat', chatRouter)
 app.use('/api/message',messageRouter)
 app.use('/api/credit',creditRouter)
 
-export default app;
+app.listen(process.env.PORT || 5000, ()=>{
+    console.log(`Server is running on port ${process.env.PORT || 5000}`)
+})
