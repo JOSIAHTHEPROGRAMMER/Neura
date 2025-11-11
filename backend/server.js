@@ -31,8 +31,4 @@ app.use('/api/chat', chatRouter)
 app.use('/api/message',messageRouter)
 app.use('/api/credit',creditRouter)
 
-const PORT = process.env.PORT || 3000
-
-app.listen(PORT, ()=>{
-    console.log(`Server Status: Online\nPort number: ${PORT}`)
-})
+export default app;
