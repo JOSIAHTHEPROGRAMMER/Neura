@@ -94,5 +94,5 @@ npm run dev
 
 - Community page and chat history
 
-Fully deployable to cloud platforms
+
 
