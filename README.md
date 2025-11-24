@@ -1,5 +1,18 @@
 # Neura – AI Chatbot Application (MERN Stack)
 
+
+![Node.js](https://img.shields.io/badge/Node.js-20.5-green?logo=node.js&logoColor=white)
+![React](https://img.shields.io/badge/React-18-blue?logo=react&logoColor=white)
+![License: MIT](https://img.shields.io/badge/License-MIT-green)
+![Stars](https://img.shields.io/github/stars/JOSIAHTHEPROGRAMMER/Neura?style=social)
+![Forks](https://img.shields.io/github/forks/JOSIAHTHEPROGRAMMER/Neura?style=social)
+![Open Issues](https://img.shields.io/github/issues/JOSIAHTHEPROGRAMMER/Neura)
+![Last Commit](https://img.shields.io/github/last-commit/JOSIAHTHEPROGRAMMER/Neura)
+![MongoDB](https://img.shields.io/badge/MongoDB-6.0-green?logo=mongodb&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/TailwindCSS-3.3-blue?logo=tailwind-css&logoColor=white)
+![Stripe](https://img.shields.io/badge/Stripe-Payment-blue?logo=stripe&logoColor=white)
+
+
 ![Frontend Dark Mode Preview](./frontend/src/assets/neura%20frontend.jpg)
 
 ## Project Overview  
@@ -93,6 +106,7 @@ npm run dev
 - Modern dark-mode/light-mode UI built with Tailwind CSS and Motion
 
 - Community page and chat history
+
 
 
 
