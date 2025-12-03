@@ -21,6 +21,7 @@
     "imagekit": "^6.0.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.18.1",
+    "nodemailer": "^7.0.10",
     "openai": "^5.20.2",
     "stripe": "^18.5.0",
     "svix": "^1.76.1"

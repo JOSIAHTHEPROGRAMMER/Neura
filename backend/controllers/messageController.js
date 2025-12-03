@@ -88,7 +88,7 @@ export const imageGenerator = async (req, res) => {
         }
 
         const { chatId, prompt, isPublished } = req.body
-
+       
 
 
         const chat = await Chat.findOne({ userId, _id: chatId })

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAppContext } from "../context/AppContext";
 import { assets } from "../assets/dummyData";
 import Message from "./Message";
@@ -12,18 +12,19 @@ const ChatBox = () => {
   const [prompt, setPrompt] = useState("");
   const [mode, setMode] = useState("text");
   const [isPublished, setIsPublished] = useState(false);
+
   const scrollRef = useRef(null);
 
   const onSubmit = async (e) => {
     try {
       e.preventDefault();
-      if (!user) {
-        return toast("Login to chat with Neura");
-      }
+      if (!user) return toast("Login to chat with Neura");
+
       setLoading(true);
       const promptCopy = prompt;
       setPrompt("");
-      setMessages((prev) => [
+
+      setMessages(prev => [
         ...prev,
         {
           role: "user",
@@ -40,31 +41,22 @@ const ChatBox = () => {
       );
 
       if (data.success) {
-        setMessages((prev) => [...prev, data.reply]);
+        setMessages(prev => [...prev, data.reply]);
 
-        if(mode === 'image'){
-          setUser(prev=>({...prev, credits: prev.credits - 15}))
+        if (mode === "image") {
+          setUser(prev => ({ ...prev, credits: prev.credits - 15 }));
         } else {
-            setUser(prev=>({...prev, credits: prev.credits - 3}))
+          setUser(prev => ({ ...prev, credits: prev.credits - 3 }));
         }
-
-
-       // toast.success(data.message);
-      } else{
-          toast.error(data.message);
-          setPrompt(promptCopy)
-
+      } else {
+        toast.error(data.message);
+        setPrompt(promptCopy);
       }
-
-
-
     } catch (error) {
-
-        toast.error(error.message);
-
-    } finally{
-      setPrompt('')
-      setLoading(false)
+      toast.error(error.message);
+    } finally {
+      setPrompt("");
+      setLoading(false);
     }
   };
 
@@ -80,34 +72,23 @@ const ChatBox = () => {
         top: scrollRef.current.scrollHeight,
       });
     }
-  },[messages]);
+  }, [messages]);
 
   return (
-    <div className="flex-1 flex flex-col justify-between ml-5 md:ml-20 xl:ml-40 mr-0 max-md:mt-14">
-      <div ref={scrollRef} className="flex-1 mb-5 overflow-y-auto">
+    <div className="relative flex flex-col h-full ml-5 md:ml-20 xl:ml-40 mr-0 max-md:mt-14">
+
+      {/* SCROLLABLE MESSAGE AREA */}
+      <div
+        ref={scrollRef}
+        className="flex-1 overflow-y-auto px-2 pb-32"
+      >
         {messages.length === 0 && (
-          <div
-            className="h-full  flex flex-col items-center justify-center 
-                  gap-3 text-amber-50 not-dark:text-neutral-500
-                  "
-          >
+          <div className="h-full flex flex-col mt-60 items-center justify-center gap-3 dark:text-amber-50">
             <span className="flex items-center text-7xl font-bold">
-              <img
-                src={assets.logo}
-                alt="Logo"
-                className="h-[1em] w-auto inline-block"
-              />
+              <img src={assets.logo} className="h-[1em]" />
               <span>eural</span>
             </span>
-
-            <p
-              className="mt-1 text-4xl
-                    sm:text-5xl
-                    text-center
-                    text-gray-400
-                    dark:text-amber-50  
-                    "
-            >
+            <p className="mt-1 text-4xl sm:text-5xl text-center text-gray-400">
               Ask something...
             </p>
           </div>
@@ -126,54 +107,53 @@ const ChatBox = () => {
         )}
       </div>
 
-      {mode === "image" && (
-        <label className="inline-flex items-center gap-2 mb-3 text-sm mx-auto">
-          <p className="text-xs">Publish Image to Community</p>
-          <input
-            onChange={(e) => setIsPublished(e.target.checked)}
-            type="checkbox"
-            className="cursor-pointer"
-            checked={isPublished}
-          />
-        </label>
-      )}
+      {/* FIXED INPUT BAR */}
+      <div className="w-full bg-transparent fixed bottom-5 left-40 flex justify-center">
+        <div className="pointer-events-auto w-[80%] max-w-3xl">
 
-      {/* prompt input box */}
-      <form
-        onSubmit={onSubmit}
-        className="flex items-center bg-primary/5 border border-primary/30 rounded-full px-2 py-1 shadow-sm focus-within:ring-2 focus-within:ring-primary transition w-[80%] mb-5 max-w-3xl mx-auto"
-      >
-        {/* Mode select */}
-        <select
-          onChange={(e) => setMode(e.target.value)}
-          value={mode}
-          className="hidden sm:block text-sm rounded-md bg-transparent px-2 py-1 outline-none text-primary"
-        >
-          <option className="dark:bg-primary/20" value="text">
-            Text
-          </option>
-          <option className="dark:bg-primary/20" value="image">
-            Image
-          </option>
-        </select>
+          {mode === "image" && (
+            <label className="inline-flex ml-60 items-center gap-2 mb-3 text-sm mx-auto">
+              <p className="text-xs">Publish Image to Community</p>
+              <input
+                onChange={(e) => setIsPublished(e.target.checked)}
+                type="checkbox"
+                checked={isPublished}
+              />
+            </label>
+          )}
 
-        {/* Text input */}
-        <input
-          onChange={(e) => setPrompt(e.target.value)}
-          value={prompt}
-          type="text"
-          placeholder="Ask anything..."
-          className="flex-1 text-sm bg-transparent outline-none text-primary placeholder:text-primary/60 px-3"
-          required
-        />
+          <form
+            onSubmit={onSubmit}
+            className="flex items-center bg-primary/5 border border-primary/30 rounded-full px-2 py-1 shadow-sm focus-within:ring-2 focus-within:ring-primary transition"
+          >
+            <select
+              onChange={(e) => setMode(e.target.value)}
+              value={mode}
+              className="hidden sm:block text-sm rounded-md bg-transparent px-2 py-1 outline-none text-primary cursor-pointer"
+            >
+              <option value="text">Text</option>
+              <option value="image">Image</option>
+            </select>
 
-        <button
-          className="p-2 rounded-full hover:bg-primary/10 transition-colors text-primary cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={loading}
-        >
-          {loading ? <IoStopCircle size={20} /> : <IoSendSharp size={20} />}
-        </button>
-      </form>
+            <input
+              onChange={(e) => setPrompt(e.target.value)}
+              value={prompt}
+              type="text"
+              placeholder="Ask anything..."
+              className="flex-1 text-sm bg-transparent outline-none text-primary px-3"
+              required
+            />
+
+            <button
+              className="p-2 rounded-full hover:bg-primary/10 transition-colors text-primary cursor-pointer"
+              disabled={loading}
+            >
+              {loading ? <IoStopCircle size={20} /> : <IoSendSharp size={20} />}
+            </button>
+          </form>
+        </div>
+      </div>
+
     </div>
   );
 };

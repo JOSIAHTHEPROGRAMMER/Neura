@@ -11,7 +11,8 @@
 ![MongoDB](https://img.shields.io/badge/MongoDB-6.0-green?logo=mongodb&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/TailwindCSS-3.3-blue?logo=tailwind-css&logoColor=white)
 ![Stripe](https://img.shields.io/badge/Stripe-Payment-blue?logo=stripe&logoColor=white)
-
+![Repo Size](https://img.shields.io/github/repo-size/JOSIAHTHEPROGRAMMER/Neura)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 
 ![Frontend Dark Mode Preview](./frontend/src/assets/neura%20frontend.jpg)
 
@@ -106,6 +107,8 @@ npm run dev
 - Modern dark-mode/light-mode UI built with Tailwind CSS and Motion
 
 - Community page and chat history
+
+
 
 
 

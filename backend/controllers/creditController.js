@@ -1,24 +1,27 @@
 import Transaction from "../models/Transaction.js";
 import Stripe from 'stripe'
+import { User } from "../models/User.js";
 
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 const plans = [
   {
-    id: "Free",
-    name: "Free",
-    price: 10,
-    credits: 100,
+    id: "starter",
+    name: "Starter Plan",
+    price: 0,
+    credits: 150,
     popular: false,
     features: [
-      "✔️ 100 text generations",
-      "✔️ 50 image generations",
+      "✔️ 50 text generations",
+      "✔️ 10 image generations",
       "✔️ Standard support",
-      "✔️ Access to basic models",
+      "✔️ Access to core models"
     ],
-    description: "Perfect for individuals just getting started.",
+    description: "An affordable entry-level plan for users who need a little more power without breaking the bank."
   },
+
+
   {
     id: "pro",
     name: "Pro",
@@ -26,8 +29,8 @@ const plans = [
     credits: 500,
     popular: true,
     features: [
-      "✔️ 500 text generations",
-      "✔️ 200 image generations",
+      "✔️ 166 text generations",
+      "✔️ 33 image generations",
       "✔️ Priority support",
       "✔️ Access to pro models",
       "⚡ Faster response time",
@@ -41,8 +44,8 @@ const plans = [
     credits: 1000,
     popular: false,
     features: [
-      "✔️ 1000 text generations",
-      "✔️ 500 image generations",
+      "✔️ 333 text generations",
+      "✔️ 66 image generations",
       "✔️ 24/7 VIP support",
       "✔️ Access to premium models",
       "👤 Dedicated account manager",
@@ -61,54 +64,89 @@ export const getPlans = async (req, res) => {
 }
 
 
-// controller for buying a plan
+// controller for purchasing plan
 export const purchasePlan = async (req, res) => {
   try {
-    const { planId } = req.body
-    const userId = req.user._id
-    const plan = plans.find(plan => plan.id == planId)
+    const { planId } = req.body;
+    const userId = req.user._id;
+
+    // Find selected plan
+    const plan = plans.find(plan => plan.id == planId);
 
     if (!plan) {
-      return res.json({ success: false, message: "Invalid plan" })
+      return res.json({ success: false, message: "Invalid plan" });
     }
 
+    if (plan.price === 0) {
+      // Give FREE plan credits ONE TIME ONLY
+      const alreadyClaimed = await Transaction.findOne({
+        userId,
+        planId: plan.id,
+        isPaid: true
+      });
+
+      if (alreadyClaimed) {
+        return res.json({ success: false, message: "Starter Plan already claimed" });
+      }
+
+      // Add credits to user
+      await User.updateOne(
+        { _id: userId },
+        { $inc: { credits: plan.credits } }
+      );
+
+      // Save transaction record
+      await Transaction.create({
+        userId,
+        planId: plan.id,
+        amount: 0,
+        credits: plan.credits,
+        isPaid: true // mark as done
+      });
+
+      return res.json({
+        success: true,
+        message: "Starter Plan activated successfully!"
+      });
+    }
+
+
+
+    // Create transaction for paid plan
     const transaction = await Transaction.create({
       userId: userId,
       planId: plan.id,
       amount: plan.price,
       credits: plan.credits,
       isPaid: false
-    })
+    });
 
     const { origin } = req.headers;
 
     const session = await stripe.checkout.sessions.create({
       success_url: `${origin}/loading`,
       cancel_url: `${origin}`,
-      metadata: { transactionId: transaction._id.toString(), appId: 'neura' },
+      metadata: {
+        transactionId: transaction._id.toString(),
+        appId: "neura"
+      },
       expires_at: Math.floor(Date.now() / 1000) + 30 * 60,
       line_items: [
         {
           price_data: {
             currency: "usd",
             unit_amount: plan.price * 100,
-            product_data: {
-              name: plan.name
-            }
+            product_data: { name: plan.name }
           },
-          quantity: 1,
-        },
+          quantity: 1
+        }
       ],
-      mode: 'payment'
-    })
+      mode: "payment"
+    });
 
-    res.json({ success: true, url: session.url })
-
-
+    res.json({ success: true, url: session.url });
 
   } catch (error) {
-    res.json({ success: false, message: error.message })
-
+    res.json({ success: false, message: error.message });
   }
-}
-
+};

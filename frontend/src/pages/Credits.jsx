@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Loading from "./Loading";
-import { dummyPlans } from "../assets/dummyData";
 import { useAppContext } from "../context/AppContext";
 import toast from "react-hot-toast";
 

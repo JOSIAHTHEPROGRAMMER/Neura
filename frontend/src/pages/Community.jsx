@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Loading from "./Loading";
 import { FocusCards } from '../components/ui/focus-cards';
 import { useAppContext } from '../context/AppContext';
