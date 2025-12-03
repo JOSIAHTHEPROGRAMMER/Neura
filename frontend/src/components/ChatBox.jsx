@@ -24,7 +24,7 @@ const ChatBox = () => {
       const promptCopy = prompt;
       setPrompt("");
 
-      setMessages(prev => [
+      setMessages((prev) => [
         ...prev,
         {
           role: "user",
@@ -41,12 +41,12 @@ const ChatBox = () => {
       );
 
       if (data.success) {
-        setMessages(prev => [...prev, data.reply]);
+        setMessages((prev) => [...prev, data.reply]);
 
         if (mode === "image") {
-          setUser(prev => ({ ...prev, credits: prev.credits - 15 }));
+          setUser((prev) => ({ ...prev, credits: prev.credits - 15 }));
         } else {
-          setUser(prev => ({ ...prev, credits: prev.credits - 3 }));
+          setUser((prev) => ({ ...prev, credits: prev.credits - 3 }));
         }
       } else {
         toast.error(data.message);
@@ -76,12 +76,15 @@ const ChatBox = () => {
 
   return (
     <div className="relative flex flex-col h-full ml-5 md:ml-20 xl:ml-40 mr-0 max-md:mt-14">
-
       {/* SCROLLABLE MESSAGE AREA */}
       <div
         ref={scrollRef}
-        className="flex-1 overflow-y-auto px-2 pb-32"
+        className={`flex-1 ${
+          messages.length === 0 ? "overflow-hidden" : "overflow-y-auto"
+        } px-2 pb-32`}
       >
+
+
         {messages.length === 0 && (
           <div className="h-full flex flex-col mt-60 items-center justify-center gap-3 dark:text-amber-50">
             <span className="flex items-center text-7xl font-bold">
@@ -110,7 +113,6 @@ const ChatBox = () => {
       {/* FIXED INPUT BAR */}
       <div className="w-full bg-transparent fixed bottom-5 left-40 flex justify-center">
         <div className="pointer-events-auto w-[80%] max-w-3xl">
-
           {mode === "image" && (
             <label className="inline-flex ml-60 items-center gap-2 mb-3 text-sm mx-auto">
               <p className="text-xs">Publish Image to Community</p>
@@ -153,7 +155,6 @@ const ChatBox = () => {
           </form>
         </div>
       </div>
-
     </div>
   );
 };
