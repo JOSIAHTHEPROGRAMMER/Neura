@@ -63,7 +63,6 @@ export const getPlans = async (req, res) => {
   }
 }
 
-
 // controller for purchasing plan
 export const purchasePlan = async (req, res) => {
   try {
@@ -71,50 +70,58 @@ export const purchasePlan = async (req, res) => {
     const userId = req.user._id;
 
     // Find selected plan
-    const plan = plans.find(plan => plan.id == planId);
+    const plan = plans.find(p => p.id == planId);
 
     if (!plan) {
       return res.json({ success: false, message: "Invalid plan" });
     }
 
-    if (plan.price === 0) {
-      // Give FREE plan credits ONE TIME ONLY
-      const alreadyClaimed = await Transaction.findOne({
-        userId,
-        planId: plan.id,
-        isPaid: true
-      });
+    // Check for 30 days cooldown for the same plan
+    const lastPurchase = await Transaction.findOne({
+      userId,
+      planId: plan.id, // cooldown is per plan
+      isPaid: true
+    }).sort({ createdAt: -1 });
 
-      if (alreadyClaimed) {
-        return res.json({ success: false, message: "Starter Plan already claimed" });
+    if (lastPurchase) {
+      const lastTime = lastPurchase.createdAt.getTime();
+      const now = Date.now();
+      const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
+
+      if (now - lastTime < THIRTY_DAYS) {
+        return res.json({
+          success: false,
+          message: "You can only activate this plan once every 30 days."
+        });
       }
+    }
 
-      // Add credits to user
+  // free plan purchase flow
+    if (plan.price === 0) {
+      // Grant credits
       await User.updateOne(
         { _id: userId },
         { $inc: { credits: plan.credits } }
       );
 
-      // Save transaction record
+      // Log transaction
       await Transaction.create({
         userId,
         planId: plan.id,
         amount: 0,
         credits: plan.credits,
-        isPaid: true // mark as done
+        isPaid: true
       });
 
       return res.json({
         success: true,
-        message: "Starter Plan activated successfully!"
+        message: `${plan.name} activated successfully!`
       });
     }
 
-
-
-    // Create transaction for paid plan
+    // paid plan purchase flow
     const transaction = await Transaction.create({
-      userId: userId,
+      userId,
       planId: plan.id,
       amount: plan.price,
       credits: plan.credits,
@@ -144,9 +151,9 @@ export const purchasePlan = async (req, res) => {
       mode: "payment"
     });
 
-    res.json({ success: true, url: session.url });
+    return res.json({ success: true, url: session.url });
 
   } catch (error) {
-    res.json({ success: false, message: error.message });
+    return res.json({ success: false, message: error.message });
   }
 };
