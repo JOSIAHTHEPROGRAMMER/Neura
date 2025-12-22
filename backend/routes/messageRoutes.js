@@ -1,13 +1,11 @@
-import express from 'express'
+import express from 'express';
 import { protectRoute } from '../middleware/auth.js';
-import { imageGenerator, sendChatMessage } from '../controllers/messageController.js';
+import { sendChatMessage, imageGenerator, stopRequest } from '../controllers/messageController.js';
 
-const messageRouter = express.Router();
+const messageRouter= express.Router();
 
-
-
-messageRouter.post('/text',protectRoute,sendChatMessage)
-messageRouter.post('/image',protectRoute,imageGenerator)
+messageRouter.post('/text', protectRoute, sendChatMessage);
+messageRouter.post('/image', protectRoute, imageGenerator);
+messageRouter.post('/stop', protectRoute, stopRequest);
 
 export default messageRouter;
-

@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 
 const ChatBox = () => {
   const { selectedChat, user, axios, setUser, token } = useAppContext();
+
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [prompt, setPrompt] = useState("");
@@ -14,48 +15,78 @@ const ChatBox = () => {
   const [isPublished, setIsPublished] = useState(false);
 
   const scrollRef = useRef(null);
+  const abortControllerRef = useRef(null);
+  const isSendingRef = useRef(false);
+
+  
+  const stopRequest = () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+    }
+    isSendingRef.current = false;
+    setLoading(false);
+    toast("Request stopped");
+  };
 
   const onSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!user) return toast("Login to chat with Neura");
+    if (isSendingRef.current) return;
+
+    isSendingRef.current = true;
+    setLoading(true);
+
+    const promptCopy = prompt;
+    setPrompt("");
+
+    setMessages((prev) => [
+      ...prev,
+      {
+        role: "user",
+        content: promptCopy,
+        timestamp: Date.now(),
+        isImage: false,
+      },
+    ]);
+
+    abortControllerRef.current = new AbortController();
+
     try {
-      e.preventDefault();
-      if (!user) return toast("Login to chat with Neura");
-
-      setLoading(true);
-      const promptCopy = prompt;
-      setPrompt("");
-
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "user",
-          content: prompt,
-          timeStamp: Date.now(),
-          isImage: false,
-        },
-      ]);
-
       const { data } = await axios.post(
         `/api/message/${mode}`,
-        { chatId: selectedChat._id, prompt, isPublished },
-        { headers: { Authorization: token } }
+        {
+          chatId: selectedChat._id,
+          prompt: promptCopy,
+          isPublished,
+        },
+        {
+          headers: { Authorization: token },
+          signal: abortControllerRef.current.signal,
+        }
       );
 
       if (data.success) {
         setMessages((prev) => [...prev, data.reply]);
 
-        if (mode === "image") {
-          setUser((prev) => ({ ...prev, credits: prev.credits - 15 }));
-        } else {
-          setUser((prev) => ({ ...prev, credits: prev.credits - 3 }));
-        }
+        setUser((prev) => ({
+          ...prev,
+          credits: prev.credits - (mode === "image" ? 15 : 3),
+        }));
       } else {
         toast.error(data.message);
         setPrompt(promptCopy);
       }
     } catch (error) {
-      toast.error(error.message);
+      if (error.name === "CanceledError") {
+        console.log("Request aborted");
+      } else {
+        toast.error(error.message);
+      }
     } finally {
-      setPrompt("");
+      abortControllerRef.current = null;
+      isSendingRef.current = false;
       setLoading(false);
     }
   };
@@ -76,15 +107,13 @@ const ChatBox = () => {
 
   return (
     <div className="relative flex flex-col h-full ml-5 md:ml-20 xl:ml-40 mr-0 max-md:mt-14">
-      {/* SCROLLABLE MESSAGE AREA */}
+      {/* MESSAGE AREA */}
       <div
         ref={scrollRef}
         className={`flex-1 ${
           messages.length === 0 ? "overflow-hidden" : "overflow-y-auto"
         } px-2 pb-32`}
       >
-
-
         {messages.length === 0 && (
           <div className="h-full flex flex-col mt-60 items-center justify-center gap-3 dark:text-amber-50">
             <span className="flex items-center text-7xl font-bold">
@@ -110,7 +139,7 @@ const ChatBox = () => {
         )}
       </div>
 
-      {/* FIXED INPUT BAR */}
+      {/* INPUT BAR */}
       <div className="w-full bg-transparent fixed bottom-5 left-40 flex justify-center">
         <div className="pointer-events-auto w-[80%] max-w-3xl">
           {mode === "image" && (
@@ -144,11 +173,13 @@ const ChatBox = () => {
               placeholder="Ask anything..."
               className="flex-1 text-sm bg-transparent outline-none text-primary px-3"
               required
+              disabled={loading}
             />
 
             <button
+              type="button"
+              onClick={loading ? stopRequest : onSubmit}
               className="p-2 rounded-full hover:bg-primary/10 transition-colors text-primary cursor-pointer"
-              disabled={loading}
             >
               {loading ? <IoStopCircle size={20} /> : <IoSendSharp size={20} />}
             </button>
