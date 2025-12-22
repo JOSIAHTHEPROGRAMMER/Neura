@@ -113,7 +113,7 @@ export const imageGenerator = async (req, res) => {
 
 
 
-      const base64Image = `data:image/pnng;base64,${Buffer.from(aiImage.data,"binary").toString('base64')}`
+      const base64Image = `data:image/png;base64,${Buffer.from(aiImage.data,"binary").toString('base64')}`
 
 
        

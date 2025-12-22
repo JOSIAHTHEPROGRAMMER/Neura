@@ -5,6 +5,7 @@ import Prism from 'prismjs'
 
 // Message component displays a single chat message
 const Message = ({ message }) => {
+  
 
   // Highlight code blocks in markdown when message content changes
   useEffect(()=>{
