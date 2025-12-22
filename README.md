@@ -6,7 +6,6 @@
 ![License: MIT](https://img.shields.io/badge/License-MIT-green)
 ![Stars](https://img.shields.io/github/stars/JOSIAHTHEPROGRAMMER/Neura?style=social)
 ![Forks](https://img.shields.io/github/forks/JOSIAHTHEPROGRAMMER/Neura?style=social)
-![Open Issues](https://img.shields.io/github/issues/JOSIAHTHEPROGRAMMER/Neura)
 ![Last Commit](https://img.shields.io/github/last-commit/JOSIAHTHEPROGRAMMER/Neura)
 ![MongoDB](https://img.shields.io/badge/MongoDB-6.0-green?logo=mongodb&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/TailwindCSS-3.3-blue?logo=tailwind-css&logoColor=white)
@@ -66,7 +65,7 @@ npm install
 #### Create a .env file in /backend with:
 
 ```ini
-PORT=5000
+PORT=your_port
 MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret
 IMAGEKIT_PUBLIC_KEY=your_imagekit_public_key
@@ -87,12 +86,21 @@ npm run server
 ### 3. Frontend Setup
 
 ```bash
-
-cd ../frontend
+## In a new terminal
+cd frontend
 npm install
+```
+
+#### Create a .env file in /frontend with:
+
+```ini
+VITE_SERVER_URL=your_backend_deployed_url
+```
+
+#### Run the backend:
+
+```bash
 npm run dev
-## Frontend will run on: http://localhost:5173
-## Backend will run on: http://localhost:5000
 ```
 
 ## Features
@@ -107,6 +115,7 @@ npm run dev
 - Modern dark-mode/light-mode UI built with Tailwind CSS and Motion
 
 - Community page and chat history
+
 
 
 
