@@ -302,6 +302,18 @@ Neura/
 
 ---
 
+## Stripe Test Card
+
+**Successful Payment:**
+- Card Number: `4242 4242 4242 4242`
+- CVC: Any 3 digits
+- Expiry: Any future date
+- ZIP: Any valid code
+
+[Full test card documentation](https://stripe.com/docs/testing)
+
+---
+
 ## Contributing
 
 Contributions are what make the open-source community amazing! Any contributions you make are **greatly appreciated**.
@@ -340,6 +352,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 ![GitHub last commit](https://img.shields.io/github/last-commit/JOSIAHTHEPROGRAMMER/Neura?style=flat-square&color=ff6b9d)
 
 </div>
+
 
 
 
