@@ -69,7 +69,7 @@ const deleteChat = async (e, chatId) => {
           alt="Logo"
           className="h-[1em] w-auto inline-block"
         />
-        <span>eural</span>
+        <span>eura</span>
       </span>
       <p className="text-xs opacity-70">Your friendly AI assistant</p>
 

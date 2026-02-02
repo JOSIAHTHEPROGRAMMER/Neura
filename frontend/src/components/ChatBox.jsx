@@ -118,7 +118,7 @@ const ChatBox = () => {
           <div className="h-full flex flex-col mt-60 items-center justify-center gap-3 dark:text-amber-50">
             <span className="flex items-center text-7xl font-bold">
               <img src={assets.logo} className="h-[1em]" />
-              <span>eural</span>
+              <span>eura</span>
             </span>
             <p className="mt-1 text-4xl sm:text-5xl text-center text-gray-400">
               Ask something...
