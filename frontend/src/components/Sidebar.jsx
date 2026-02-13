@@ -5,51 +5,62 @@ import {
   RiDeleteBin6Line,
   RiGalleryFill,
   RiVipDiamondFill,
-  RiLogoutBoxLine
+  RiLogoutBoxLine,
 } from "react-icons/ri";
 import moment from "moment";
 import { assets } from "../assets/dummyData";
 import toast from "react-hot-toast";
+import { logoPicker } from "../lib/utils";
 
 const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
-  const { chats, setSelectedChat, theme, setTheme, user, navigate, createNewChat, axios, setChats, fetchUserChats, setToken, token } =
-    useAppContext();
+  const {
+    chats,
+    setSelectedChat,
+    theme,
+    setTheme,
+    user,
+    navigate,
+    createNewChat,
+    axios,
+    setChats,
+    fetchUserChats,
+    setToken,
+    token,
+  } = useAppContext();
   const [search, setSearch] = useState("");
 
   const logout = () => {
-    localStorage.removeItem('token')
-    setToken(null)
-    toast.success('you Logged out!')
-  }
+    localStorage.removeItem("token");
+    setToken(null);
+    toast.success("you Logged out!");
+  };
 
+  const deleteChat = async (e, chatId) => {
+    try {
+      e.stopPropagation();
 
-const deleteChat = async (e, chatId) => {
-  try {
-    e.stopPropagation();
+      const confirmed = window.confirm(
+        "Are you sure you want to delete this chat?",
+      );
+      if (!confirmed) return;
 
-    const confirmed = window.confirm('Are you sure you want to delete this chat?');
-    if (!confirmed) return;
+      const { data } = await axios.post(
+        "/api/chat/delete",
+        { chatId },
+        { headers: { Authorization: token } },
+      );
 
-    const { data } = await axios.post(
-      '/api/chat/delete',
-      { chatId },
-      { headers: { Authorization: token } }  
-    );
+      if (data.success) {
+        setChats((prev) => prev.filter((chat) => chat._id !== chatId));
 
-    if (data.success) {
+        await fetchUserChats();
 
-      setChats(prev => prev.filter(chat => chat._id !== chatId));
-
-
-      await fetchUserChats();
-
-      toast.success(data.message);
+        toast.success(data.message);
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || error.message);
     }
-  } catch (error) {
-    toast.error(error.response?.data?.message || error.message); 
-  }
-};
-
+  };
 
   return (
     <div
@@ -63,18 +74,20 @@ const deleteChat = async (e, chatId) => {
       `}
     >
       {/* Logo + Brand Name */}
-      <span className="flex items-center text-4xl font-bold">
+      <span className="flex items-center text-6xl font-bold mb-4">
         <img
-          src={assets.logo}
+          src={logoPicker(theme !== "dark")}
           alt="Logo"
           className="h-[1em] w-auto inline-block"
         />
-        <span>eura</span>
       </span>
       <p className="text-xs opacity-70">Your friendly AI assistant</p>
 
       {/* New Chat Button */}
-      <button onClick={createNewChat} className="flex justify-center items-center gap-2 w-full py-2 mt-10 text-white bg-gradient-to-r from-[#382a9e] to-[#6825ac] text-sm rounded-md cursor-pointer hover:scale-105 transition-transform">
+      <button
+        onClick={createNewChat}
+        className="flex justify-center items-center gap-2 w-full py-2 mt-10 text-white bg-gradient-to-r from-[#382a9e] to-[#6825ac] text-sm rounded-md cursor-pointer hover:scale-105 transition-transform"
+      >
         <FaPlus />
         New Chat
       </button>
@@ -100,7 +113,7 @@ const deleteChat = async (e, chatId) => {
               ? chat.messages[0].content
                   .toLowerCase()
                   .includes(search.toLowerCase())
-              : chat.name.toLowerCase().includes(search.toLowerCase())
+              : chat.name.toLowerCase().includes(search.toLowerCase()),
           )
           .map((chat) => (
             <div
@@ -127,7 +140,14 @@ const deleteChat = async (e, chatId) => {
                 </p>
               </div>
 
-              <RiDeleteBin6Line onClick={e=>toast.promise(deleteChat(e, chat._id), {loading: 'deleting...'})} className="hidden group-hover:block cursor-pointer " />
+              <RiDeleteBin6Line
+                onClick={(e) =>
+                  toast.promise(deleteChat(e, chat._id), {
+                    loading: "deleting...",
+                  })
+                }
+                className="hidden group-hover:block cursor-pointer "
+              />
             </div>
           ))}
       </div>
@@ -194,7 +214,10 @@ const deleteChat = async (e, chatId) => {
           </p>
 
           {user && (
-            <RiLogoutBoxLine onClick={logout} className="cursor-pointer not-dark:text-black  hover:text-primary text-xl" />
+            <RiLogoutBoxLine
+              onClick={logout}
+              className="cursor-pointer not-dark:text-black  hover:text-primary text-xl"
+            />
           )}
         </div>
       </div>

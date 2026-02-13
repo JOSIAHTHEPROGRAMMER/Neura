@@ -4,9 +4,10 @@ import { assets } from "../assets/dummyData";
 import Message from "./Message";
 import { IoStopCircle, IoSendSharp } from "react-icons/io5";
 import toast from "react-hot-toast";
+import { logoPicker } from "../lib/utils";
 
 const ChatBox = () => {
-  const { selectedChat, user, axios, setUser, token } = useAppContext();
+  const { selectedChat, user, axios, setUser, token, theme } = useAppContext();
 
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -18,7 +19,6 @@ const ChatBox = () => {
   const abortControllerRef = useRef(null);
   const isSendingRef = useRef(false);
 
-  
   const stopRequest = () => {
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
@@ -64,7 +64,7 @@ const ChatBox = () => {
         {
           headers: { Authorization: token },
           signal: abortControllerRef.current.signal,
-        }
+        },
       );
 
       if (data.success) {
@@ -117,8 +117,7 @@ const ChatBox = () => {
         {messages.length === 0 && (
           <div className="h-full flex flex-col mt-60 items-center justify-center gap-3 dark:text-amber-50">
             <span className="flex items-center text-7xl font-bold">
-              <img src={assets.logo} className="h-[1em]" />
-              <span>eura</span>
+              <img src={logoPicker(theme !== "dark")} className="h-[1em]" />
             </span>
             <p className="mt-1 text-4xl sm:text-5xl text-center text-gray-400">
               Ask something...

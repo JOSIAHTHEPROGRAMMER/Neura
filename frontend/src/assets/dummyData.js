@@ -6,48 +6,49 @@ import image4 from "./image4.jpg";
 import image5 from "./image5.jpg";
 import image6 from "./image6.jpg";
 import pfp from "./pfp.png"
-import logo from "./logo.png"
+import logo from "./logo.webp"
+import darkLogo from "./darkLogo.webp"
 
-
-export const assets ={
-    image1,
-    image2,
-    image3,
-    image4,
-    image5,
-    image6,
-    pfp,
-    logo,
+export const assets = {
+  image1,
+  image2,
+  image3,
+  image4,
+  image5,
+  image6,
+  pfp,
+  logo,
+  darkLogo
 }
 
 export const dummyImages = [
-    {
-        "_id" : "234f",
-        "imageUrl": image1,
-        "userName": "We Go Pass"
-    },
-    {
-       "_id" : "234fd",
-        "imageUrl": image3,
-        "userName": "We Go Pass"
-    },
-  
+  {
+    "_id": "234f",
+    "imageUrl": image1,
+    "userName": "We Go Pass"
+  },
+  {
+    "_id": "234fd",
+    "imageUrl": image3,
+    "userName": "We Go Pass"
+  },
 
-    {
-        "_id" : "2h67g",
-        "imageUrl": image4,
-        "userName": "We Go Pass"
-    },
-    {
-        "_id" : "134fd",
-        "imageUrl": image5,
-        "userName": "We Go Pass"
-    },
-    {
-        "_id" : "35kld",
-        "imageUrl": image6,
-        "userName": "We Go Pass"
-    }
+
+  {
+    "_id": "2h67g",
+    "imageUrl": image4,
+    "userName": "We Go Pass"
+  },
+  {
+    "_id": "134fd",
+    "imageUrl": image5,
+    "userName": "We Go Pass"
+  },
+  {
+    "_id": "35kld",
+    "imageUrl": image6,
+    "userName": "We Go Pass"
+  }
 ]
 
 export const dummyPlans = [
@@ -70,7 +71,7 @@ export const dummyPlans = [
     name: "Pro",
     price: 20,
     credits: 500,
-    popular: true, 
+    popular: true,
     features: [
       "✔️ 500 text generations",
       "✔️ 200 image generations",
@@ -99,10 +100,10 @@ export const dummyPlans = [
 
 
 export const dummyUserData = {
-    name: "We Go Pass",
-    email: "wegopass@admin.com",
-    password: "$2b$12$f1SpQo.RTgLipjtsD.oeA.EEh1FrK6YH7YlU/gaa9F19WOtOvkf32", 
-    credits: 500, 
+  name: "We Go Pass",
+  email: "wegopass@admin.com",
+  password: "$2b$12$f1SpQo.RTgLipjtsD.oeA.EEh1FrK6YH7YlU/gaa9F19WOtOvkf32",
+  credits: 500,
 };
 
 
@@ -125,7 +126,7 @@ export const dummyChats = [
         "isImage": true,
         "isPublished": true,
         "role": "assistant",
-        "content": image3, 
+        "content": image3,
         "timestamp": 1756178194747,
       }
     ],
@@ -144,7 +145,7 @@ export const dummyChats = [
         "content": "Show the latest AI breakthroughs in a futuristic lab filled with holographic screens and floating data panels",
         "timestamp": 1756106415912,
       },
-      
+
       {
         "isImage": false,
         "isPublished": false,
@@ -163,7 +164,7 @@ export const dummyChats = [
         "isImage": true,
         "isPublished": true,
         "role": "assistant",
-        "content": image1, 
+        "content": image1,
         "timestamp": 1756107486680,
       },
       {
@@ -191,7 +192,7 @@ export const dummyChats = [
         "isImage": true,
         "isPublished": true,
         "role": "assistant",
-        "content": image2, 
+        "content": image2,
         "timestamp": 1756159034238,
       },
       {
@@ -233,7 +234,7 @@ export const dummyChats = [
         "isImage": true,
         "isPublished": true,
         "role": "assistant",
-        "content": image6, 
+        "content": image6,
         "timestamp": 1756159273878,
       },
       {
@@ -261,7 +262,7 @@ export const dummyChats = [
         "isImage": true,
         "isPublished": true,
         "role": "assistant",
-        "content": image5, 
+        "content": image5,
         "timestamp": 1756160254161,
       },
       {
@@ -275,7 +276,7 @@ export const dummyChats = [
         "isImage": true,
         "isPublished": true,
         "role": "assistant",
-        "content": image4, 
+        "content": image4,
         "timestamp": 1756164001928,
       }
     ],
