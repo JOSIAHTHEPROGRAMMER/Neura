@@ -16,7 +16,7 @@ const Credits = () => {
       if (data.success) {
         setPlans(data.plans);
       } else {
-        toast.error(data.message || 'Failed to fetch payment plans');
+        toast.error(data.message || "Failed to fetch payment plans");
       }
     } catch (error) {
       toast.error(error.message);
@@ -24,25 +24,24 @@ const Credits = () => {
     setLoading(false);
   };
 
-
   const purchasePlan = async (planId) => {
-     try {
-        const { data } = await axios.post("/api/credit/purchase", {planId},
-          {headers: { Authorization: token }} 
-         )
+    try {
+      const { data } = await axios.post(
+        "/api/credit/purchase",
+        { planId },
+        { headers: { Authorization: token } },
+      );
 
       if (data.success) {
-        window.location.href = data.url
-        toast.success("purchases")
+        window.location.href = data.url;
+        toast.success("purchases");
       } else {
         toast.error(data.message);
       }
-
-     } catch (error) {
-             toast.error(error.message);
-
-     }
-  }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
 
   useEffect(() => {
     fetchPlans();
@@ -51,7 +50,7 @@ const Credits = () => {
   if (loading) return <Loading />;
   return (
     <div className="max-w-7xl h-screen overflow-y-auto mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h2 className="text-3xl font-semibold text-center mb-10 xl:mt-30 dark:text-white not-dark:invert ">
+      <h2 className="text-3xl font-semibold text-center mb-10 xl:mt-10 dark:text-white not-dark:invert ">
         Upgrade your plan
       </h2>
 
@@ -87,7 +86,12 @@ const Credits = () => {
                 </li>
               ))}
             </ul>
-            <button onClick={()=> toast.promise(purchasePlan(plan.id),{loading:'Processing payment...'})}
+            <button
+              onClick={() =>
+                toast.promise(purchasePlan(plan.id), {
+                  loading: "Processing payment...",
+                })
+              }
               className="mt-auto w-full bg-[#5445c5] 
              hover:bg-[#8024dd]  text-amber-50 
              font-semibold py-2.5 cursor-pointer px-4 rounded-lg shadow-sm transition-all"
