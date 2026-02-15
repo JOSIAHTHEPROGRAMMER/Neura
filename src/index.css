@@ -1,26 +1,27 @@
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
 
 @import "tailwindcss";
 
-body{
-  font-family: "Inter", 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+body {
+  font-family:
+    "Inter", "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
 
 @custom-variant dark (&:where(.dark,.dark *));
 
 @theme {
-  --color-primary: #36BEDA;
-
-;
+  --color-primary: #36beda;
 }
 
-.reset-tw :not(pre):not(code){
+.reset-tw :not(pre):not(code) {
   all: revert;
 }
 
 @keyframes pulse {
-  0%, 80%, 100% {
+  0%,
+  80%,
+  100% {
     transform: scale(0.6);
     opacity: 0.4;
   }
@@ -42,27 +43,26 @@ body{
   animation-delay: 0.4s;
 }
 
-
 ::-webkit-scrollbar {
-    width: 8px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-    background: #1a202c;
-    border-radius: 4px;
+  background: #1a202c;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #4a5568;
-    border-radius: 4px;
+  background: #4a5568;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #718096;
+  background: #718096;
 }
 
 /* Firefox scrollbar */
 * {
-    scrollbar-width: thin;
-    scrollbar-color: #4a5568 #1a202c;
+  scrollbar-width: thin;
+  scrollbar-color: #4a5568 #1a202c;
 }
